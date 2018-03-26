@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="card-header">
+    {{ title }}
+  </div>
+  <div class="card-body">
+    <form [formGroup]="angForm" novalidate>
+      <div class="form-group">
+        <label class="col-md-4">Product Name</label>
+        <input type="text" class="form-control" formControlName="name" #name [(ngModel)] = "product.name"/>
+      </div>
+      <div *ngIf="angForm.controls['name'].invalid && (angForm.controls['name'].dirty || angForm.controls['name'].touched)" class="alert alert-danger">
+        <div *ngIf="angForm.controls['name'].errors.required">
+          Name is required.
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4">Product Status</label>
+        <input type="text" class="form-control" formControlName="status" #status [(ngModel)] = "product.status" />
+      </div>
+      <div *ngIf="angForm.controls['status'].invalid && (angForm.controls['status'].dirty || angForm.controls['status'].touched)" class="alert alert-danger">
+        <div *ngIf="angForm.controls['status'].errors.required">
+          Status is required.
+        </div>
+      </div>
+        <div class="form-group">
+          <button (click)="updateProduct(name.value, status.value)" [disabled]="angForm.pristine || angForm.invalid" class="btn btn-primary">Update</button>
+          </div>
+    </form>
+  </div>
+</div>

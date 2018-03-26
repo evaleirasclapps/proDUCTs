@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="card-header">
+      {{ title }}
+    </div>
+    <div class="card-body">
+      <form [formGroup]="angForm" novalidate>
+        <div class="form-group">
+          <label class="col-md-4">Product Name</label>
+          <input type="text" class="form-control" formControlName="name" #name/>
+        </div>
+        <div *ngIf="angForm.controls['name'].invalid && (angForm.controls['name'].dirty || angForm.controls['name'].touched)" class="alert alert-danger">
+          <div *ngIf="angForm.controls['name'].errors.required">
+            Please add a product name!
+          </div>
+        </div>
+          <div class="form-group">
+              <label class="col-md-4">Status</label>
+            <select class="custom-select form-control" formControlName="status" #status>
+              <option selected>Choose...</option>
+              <option value="1">in stock</option>
+              <option value="2">out of stock</option>
+              <option value="3">not produced</option>
+            </select>
+          </div>
+          <div *ngIf="angForm.controls['status'].invalid && (angForm.controls['status'].dirty || angForm.controls['status'].touched)" class="alert alert-danger">
+             <div *ngIf="angForm.controls['status'].errors.required">
+               Please choose any status for this product!
+             </div>
+        </div>
+        <div class="form-group">
+          <button (click)="addProduct(name.value, status.value)" [disabled]="angForm.pristine || angForm.invalid" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
