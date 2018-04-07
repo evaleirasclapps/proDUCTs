@@ -1,57 +1,88 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+
+import {Product} from './models/product.model';
 
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+
+const API_URL = 'http://localhost:4000/products';
 
 @Injectable()
 export class ProductService {
 
-  result: any;
-  constructor(private http: HttpClient) {}
+    private _products = [];
+    private productsSubject: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>([]);
+    public products$ = this.productsSubject.asObservable();
 
-  addProduct(name, status)  {
-    const uri = 'http://localhost:4000/products/add';
-    const obj = {
-      name: name,
-      status: status
-    };
+    private get products(): Product[] {
+        return this._products;
+    }
 
-    this.http.post(uri, obj)
-        .subscribe(res => console.log('Done'));
-  }
+    private set products(products: Product[]) {
+        this.productsSubject.next(products);
+        this._products = products;
+    }
 
-  getProducts() {
-    const uri = 'http://localhost:4000/products';
-    return this.http.get(uri).map(res => {
-              return res;
+    constructor(private http: HttpClient) {
+        this.getProducts().subscribe();
+    }
+
+    addProduct(name: string, status: string) {
+        const uri = `${API_URL}/add`;
+        const obj = {
+            name: name,
+            status: status
+        };
+
+        this.http.post<Product[]>(uri, obj)
+            .subscribe(res => {
+                this.products = this._products.concat(obj);
             });
-  }
+    }
 
-  editProduct(id) {
-    const uri = 'http://localhost:4000/products/edit/' + id;
-    return this.http.get(uri).map(res => {
-              return res;
+    getProducts() {
+        const uri = `${API_URL}`;
+        return this.http.get<Product[]>(uri)
+            .do((products: Product[]) => {
+                this.products = products;
+            })
+            .map(res => {
+                return res;
             });
-  }
+    }
 
-  updateProduct(name, status, id) {
-    const uri = 'http://localhost:4000/products/update/' + id;
+    editProduct(id) {
+        const uri = `${API_URL}/edit/${id}`;
+        return this.http.get(uri);
+    }
 
-    const obj = {
-      name: name,
-      status: status
-    };
-    this.http.post(uri, obj)
-        .subscribe(res => console.log('Done'));
-  }
+    updateProduct(name, status, id) {
+        const uri = `${API_URL}/update/${id}`;
 
-  deleteProduct(id) {
-    const uri = 'http://localhost:4000/products/delete/' + id;
+        const obj = {
+            name: name,
+            status: status
+        };
+        this.http.post(uri, obj)
+            .do(_ => {
+                this.products = this.products.map(product => {
+                    if (product._id === id) {
+                        return { _id: id, ...obj };
+                    }
+                    return product;
+                });
+            })
+            .subscribe(res => console.log('Done'));
+    }
 
-        return this.http.get(uri).map(res => {
-              return res;
+    deleteProduct(id) {
+        const uri = `${API_URL}/delete/${id}`;
+
+        return this.http.get(uri)
+            .do(_ => {
+                this.products = this.products.filter(product => product._id !== id);
             });
-  }
+    }
 }

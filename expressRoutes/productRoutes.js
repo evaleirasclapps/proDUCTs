@@ -30,7 +30,7 @@ productRoutes.route('/').get(function (req, res) {
 });
 
 // Defined edit route
-productRoutes.route('/edit/:id').get(function (req, res) {
+productRoutes.route('/edit/:_id').get(function (req, res) {
   var id = req.params.id;
   Product.findById(id, function (err, product){
       res.json(product);
@@ -38,7 +38,7 @@ productRoutes.route('/edit/:id').get(function (req, res) {
 });
 
 //  Defined update route
-productRoutes.route('/update/:id').post(function (req, res) {
+productRoutes.route('/update/:_id').post(function (req, res) {
    Product.findById(req.params.id, function(err, product) {
     if (!product)
       return next(new Error('Could not load Document'));
@@ -57,7 +57,7 @@ productRoutes.route('/update/:id').post(function (req, res) {
 });
 
 // Defined delete | remove | destroy route
-productRoutes.route('/delete/:id').get(function (req, res) {
+productRoutes.route('/delete/:_id').get(function (req, res) {
    Product.findByIdAndRemove({_id: req.params.id}, function(err, product){
         if(err) res.json(err);
         else res.json('Successfully removed');
