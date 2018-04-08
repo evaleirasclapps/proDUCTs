@@ -1,30 +1,24 @@
-import { BrowserModule } from '@angular/platform-browser';
-import  { RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule} from '@angular/router';
+import {NgModule} from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
+import {ReactiveFormsModule} from '@angular/forms';
 
-import { AppComponent } from './app.component';
-import { IndexComponent } from './components/index/index.component';
-import { CreateComponent } from './components/create/create.component';
+import {AppComponent} from './app.component';
+import {appRoutes} from './routerConfig';
 
-import { EditComponent } from './components/edit/edit.component';
-import { appRoutes } from './routerConfig';
-
-import { ProductService } from './product.service';
+import {ProductService} from './product.service';
+import {ShareModule} from './share/share.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    IndexComponent,
-    CreateComponent,
-    EditComponent
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     HttpClientModule,
-    ReactiveFormsModule
+    ShareModule
   ],
   providers: [ProductService],
   bootstrap: [AppComponent]
